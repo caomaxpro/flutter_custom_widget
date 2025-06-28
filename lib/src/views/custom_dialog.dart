@@ -48,6 +48,8 @@ class CustomDialog extends StatelessWidget {
   final VoidCallback? onCancel;
   final String confirmText;
   final String cancelText;
+  final Color? titleBackgroundColor;
+  final Color? contentBackgroundColor;
 
   const CustomDialog({
     super.key,
@@ -57,6 +59,8 @@ class CustomDialog extends StatelessWidget {
     this.onCancel,
     this.confirmText = 'Delete',
     this.cancelText = 'Cancel',
+    this.titleBackgroundColor,
+    this.contentBackgroundColor,
   });
 
   @override
@@ -64,79 +68,88 @@ class CustomDialog extends StatelessWidget {
     return Stack(
       children: [
         BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-          child: Container(color: Colors.black.withOpacity(0.5)),
+          filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+          child: Container(color: Colors.black.withOpacity(0.2)),
         ),
         Center(
           child: Container(
-            constraints: const BoxConstraints(minWidth: 320, maxWidth: 400),
-            padding: const EdgeInsets.all(0),
+            constraints: const BoxConstraints(minWidth: 280, maxWidth: 340),
             decoration: BoxDecoration(
               color: Theme.of(context).dialogBackgroundColor,
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.15),
-                  blurRadius: 32,
-                  offset: const Offset(0, 8),
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 16,
+                  offset: const Offset(0, 4),
                 ),
               ],
             ),
             child: Material(
               color: Colors.transparent,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 28),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Icon(Icons.warning_rounded, color: Colors.redAccent, size: 48),
-                    const SizedBox(height: 16),
-                    Text(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Title with background color
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                    decoration: BoxDecoration(
+                      color: titleBackgroundColor ?? Colors.blueGrey[50],
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(12),
+                        topRight: Radius.circular(12),
+                      ),
+                    ),
+                    child: Text(
                       title,
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 12),
-                    Text(
+                  ),
+                  // Content with background color
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
+                    color: contentBackgroundColor ?? Colors.white,
+                    child: Text(
                       content,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey[700]),
+                      style: Theme.of(context).textTheme.bodyMedium,
                       textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 28),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  ),
+                  // Buttons
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+                    child: Row(
                       children: [
                         Expanded(
                           child: OutlinedButton(
                             onPressed: onCancel ?? () => Navigator.of(context).pop(false),
                             style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.grey[800],
-                              side: BorderSide(color: Colors.grey[400]!),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
                             ),
-                            child: Text(cancelText, style: const TextStyle(fontWeight: FontWeight.w500)),
+                            child: Text(cancelText),
                           ),
                         ),
-                        const SizedBox(width: 16),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: ElevatedButton(
                             onPressed: onConfirm ?? () => Navigator.of(context).pop(true),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.redAccent,
-                              foregroundColor: Colors.white,
                               elevation: 0,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
                             ),
-                            child: Text(confirmText, style: const TextStyle(fontWeight: FontWeight.w600)),
+                            child: Text(confirmText),
                           ),
                         ),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
