@@ -10,19 +10,20 @@ class CustomTextInput extends StatelessWidget {
   final TextEditingController? controller;
   final double? width;
   final double? height;
-  final EdgeInsetsGeometry? padding; // Tổng padding
+  final EdgeInsetsGeometry? padding;
   final double? leftPadding;
   final double? rightPadding;
   final double? topPadding;
   final double? bottomPadding;
-  final BoxBorder? border; // border tổng chung
-  final BorderRadius? borderRadius; // Add this line
+  final BoxBorder? border;
+  final BorderRadius? borderRadius;
   final Color? cursorColor;
+  final bool hideTitle;
 
   const CustomTextInput({
     super.key,
-    required this.title,
     required this.placeholder,
+    this.title = "",
     this.titleStyle,
     this.contentStyle,
     this.backgroundColor,
@@ -36,8 +37,9 @@ class CustomTextInput extends StatelessWidget {
     this.topPadding,
     this.bottomPadding,
     this.border,
-    this.borderRadius, // Add this line
+    this.borderRadius,
     this.cursorColor,
+    this.hideTitle = false,
   });
 
   @override
@@ -51,26 +53,28 @@ class CustomTextInput extends StatelessWidget {
           bottom: bottomPadding ?? 0,
         );
 
+    final bool shouldShowTitle = !hideTitle && title.trim().isNotEmpty;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
-          style:
-              titleStyle ??
-              Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: textColor ?? Colors.black,
-              ),
-        ),
-        const SizedBox(height: 10),
+        if (shouldShowTitle) ...[
+          Text(
+            title,
+            style:
+                titleStyle ??
+                Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: textColor ?? Colors.black,
+                ),
+          ),
+          const SizedBox(height: 10),
+        ],
         Container(
           width: width,
           height: height,
           decoration: BoxDecoration(
             color: backgroundColor ?? Colors.grey.shade200,
-            borderRadius:
-                borderRadius ??
-                BorderRadius.circular(8), // Use custom or default
+            borderRadius: borderRadius ?? BorderRadius.circular(8),
             border: border,
           ),
           padding: effectivePadding,
